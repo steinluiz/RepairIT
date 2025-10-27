@@ -14,10 +14,17 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Bukkit;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class RepairITMain extends JavaPlugin {
 
     public static ConfigManager CONFIG;
+    public static String newVersion = null;
+    public final int RESOURCE_ID = 129800;
 
     public static final class Keys {
         public static final NamespacedKey REPAIRIT = new NamespacedKey("repairit", "repairit");
@@ -32,6 +39,7 @@ public class RepairITMain extends JavaPlugin {
         PluginCommand c = getCommand("repairit");
 
         getServer().getPluginManager().registerEvents(new RepairITListener(this), this);
+        getServer().getPluginManager().registerEvents(new UpdateListener(), this);
 
         if (c != null) {
             RepairITCommand exec = new RepairITCommand(this);
@@ -67,10 +75,37 @@ public class RepairITMain extends JavaPlugin {
         recipe.setIngredient('A', Material.IRON_INGOT);
         recipe.setIngredient('B', Material.STICK);
         getServer().addRecipe(recipe);
+
+        checkUpdates();
     }
 
     @Override
     public void onDisable() {
         getLogger().info("RepairIT was disabled!");
+    }
+
+    private void checkUpdates() {
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+            try {
+                String currentVersion = this.getDescription().getVersion();
+                URL url = new URL("https://api.spigotmc.org/legacy/update.php?resource=" + RESOURCE_ID);
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestMethod("GET");
+                String latestVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+
+                if (!currentVersion.equalsIgnoreCase(latestVersion)) {
+                    getLogger().warning("====================================================");
+                    getLogger().warning("A new version of RepairIT is available: " + latestVersion);
+                    getLogger().warning("You are using version: " + currentVersion);
+                    getLogger().warning("Download at: https://www.spigotmc.org/resources/" + RESOURCE_ID);
+                    getLogger().warning("====================================================");
+                    newVersion = latestVersion;
+                } else {
+                    getLogger().info("RepairIT is up to date. (" + currentVersion + ")");
+                }
+            } catch (Exception e) {
+                getLogger().warning("Could not check for updates: " + e.getMessage());
+            }
+        });
     }
 }
