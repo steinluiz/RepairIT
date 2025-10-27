@@ -23,4 +23,4 @@ This plugin allows players to place a damaged item directly onto an anvil, add t
 3.  **Add the Material:** Right-click the correct repair material (like a diamond) onto the same anvil.
 4.  **Hammer Time!** Left-click the anvil with your Hammer. After a few strikes, the material will be consumed, and your item's durability will be restored!
 
-<img width="232" height="108" alt="image" src="https://github.com/user-attachments/assets/70e1a479-203b-4cf3-9d00-c6f796409027" />
+	<img width="232" height="108" alt="image" src="https://github.com/user-attachments/assets/70e1a479-203b-4cf3-9d00-c6f796409027" />
