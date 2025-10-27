@@ -1,4 +1,5 @@
-<img width="1997" height="444" alt="minecraft_title" src="https://github.com/user-attachments/assets/1602ae78-8a81-4a98-90ad-d164db7fe8a7" />
+<img width="1997" height="440" alt="minecraft_title (1)" src="https://github.com/user-attachments/assets/1458c936-d1a5-47f5-898d-bd4ece2f7860" />
+
 
 
 **RepairIT** transforms the boring anvil GUI into a dynamic, immersive, and hands-on repair station. Ditch the menus and let your players physically repair their gear in the world.
