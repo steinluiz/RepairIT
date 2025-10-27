@@ -1,0 +1,5 @@
+repair-per-material:
+  IRON_INGOT: 500
+  GOLD_INGOT: 500
+  DIAMOND: 500
+  NETHERITE_INGOT: 500

@@ -1,0 +1,8 @@
+target/
+build/
+*.jar
+logs/
+*.log
+.idea/
+*.iml
+.DS_Store

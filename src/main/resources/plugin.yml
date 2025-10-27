@@ -1,0 +1,14 @@
+name: RepairIT
+version: '1.1'
+main: com.stein.repairit.RepairITMain
+description: Repair things in a cool way
+api-version: '1.21'
+author: Stein
+commands:
+  repairit:
+    description: RepairIT commands
+    usage: /repairit reload
+    permission: repairit.admin
+permissions:
+  repairit.admin:
+    default: op
