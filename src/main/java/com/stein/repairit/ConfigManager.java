@@ -19,16 +19,38 @@ public class ConfigManager {
         ensure(sec, "GOLD_INGOT", 500);
         ensure(sec, "DIAMOND", 500);
         ensure(sec, "NETHERITE_INGOT", 500);
+        ConfigurationSection hammerSec = cfg.getConfigurationSection("hammer");
+        if (hammerSec == null) hammerSec = cfg.createSection("hammer");
 
+        ensure(hammerSec, "NAME", "Hammer");
+        ensure(hammerSec, "ITEM", "MACE");
         plugin.saveConfig();
     }
 
-    private void ensure(ConfigurationSection sec, String key, int value) {
-        if (!sec.contains(key)) sec.set(key, value);
+    private void ensure(ConfigurationSection sec, String key, Object value) {
+        if (!sec.contains(key)) {
+            sec.set(key, value);
+        }
     }
 
     public int getRepairAmount(Material material) {
         return plugin.getConfig().getInt("repair-per-material." + material.name(), 0);
+    }
+    public String getHammerName() {
+        return plugin.getConfig().getString("hammer.NAME", "Hammer");
+    }
+
+    public Material getHammerMaterial() {
+        String matName = plugin.getConfig().getString("hammer.ITEM", "MACE");
+        Material mat = Material.matchMaterial(matName);
+        return mat != null ? mat : Material.MACE;
+    }
+
+    public int getHammerCustomModelData() {
+        if (plugin.getConfig().contains("hammer.CUSTOM_MODEL_DATA")) {
+            return plugin.getConfig().getInt("hammer.CUSTOM_MODEL_DATA");
+        }
+        return -1;
     }
 
     public void reload() { plugin.reloadConfig(); }

@@ -3,3 +3,10 @@ repair-per-material:
   GOLD_INGOT: 500
   DIAMOND: 500
   NETHERITE_INGOT: 500
+
+# If you edit something under this line you should restart the server to apply the changes
+hammer:
+  NAME: '&fHammer'
+  ITEM: mace
+  # If you want to set a custom model data please uncomment the next line
+  # CUSTOM_MODEL_DATA: 100

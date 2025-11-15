@@ -48,11 +48,15 @@ public class RepairITMain extends JavaPlugin {
         }
         getLogger().info("RepairIT is enabled!");
 
-        ItemStack mace = new ItemStack(Material.MACE);
+        Material hammerMaterial = CONFIG.getHammerMaterial();
+        String hammerName = CONFIG.getHammerName();
+        int hammerModelData = CONFIG.getHammerCustomModelData();
+        ItemStack mace = new ItemStack(hammerMaterial);
         ItemMeta meta = mace.getItemMeta();
-
-        meta.setDisplayName(ChatColor.WHITE + "Hammer");
-
+        meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', hammerName));
+        if (hammerModelData > -1) {
+            meta.setCustomModelData(hammerModelData);
+        }
         AttributeModifier dmgModifier = new AttributeModifier(
                 UUID.fromString("8b2e5399-b04e-4fef-802c-f60037a3f36c"),
                 "repairit:hammer_damage",
