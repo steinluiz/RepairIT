@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 public class RepairITMain extends JavaPlugin {
 
@@ -72,14 +73,21 @@ public class RepairITMain extends JavaPlugin {
         meta.getPersistentDataContainer().set(Keys.REPAIRIT, PersistentDataType.INTEGER, 1);
 
         mace.setItemMeta(meta);
-
         NamespacedKey key = new NamespacedKey(this, "repairit_hammer");
-        ShapedRecipe recipe = new ShapedRecipe(key, mace);
-        recipe.shape("AAA", "ABA", " B ");
-        recipe.setIngredient('A', Material.IRON_INGOT);
-        recipe.setIngredient('B', Material.STICK);
-        getServer().addRecipe(recipe);
-
+        if (CONFIG.isCraftingEnabled()) {
+            ShapedRecipe recipe = new ShapedRecipe(key, mace);
+            String[] shape = CONFIG.getCraftingShape();
+            Map<Character, Material> ingredients = CONFIG.getCraftingIngredients();
+            recipe.shape(shape);
+            for (Map.Entry<Character, Material> entry : ingredients.entrySet()) {
+                recipe.setIngredient(entry.getKey(), entry.getValue());
+            }
+            getServer().addRecipe(recipe);
+        } else {
+            if (getServer().getRecipe(key) != null) {
+                getServer().removeRecipe(key);
+            }
+        }
         checkUpdates();
     }
 
@@ -97,7 +105,8 @@ public class RepairITMain extends JavaPlugin {
                 con.setRequestMethod("GET");
                 String latestVersion = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
 
-                if (!currentVersion.equalsIgnoreCase(latestVersion)) {
+                // Lógica corrigida:
+                if (isNewer(latestVersion, currentVersion)) {
                     getLogger().warning("====================================================");
                     getLogger().warning("A new version of RepairIT is available: " + latestVersion);
                     getLogger().warning("You are using version: " + currentVersion);
@@ -111,5 +120,27 @@ public class RepairITMain extends JavaPlugin {
                 getLogger().warning("Could not check for updates: " + e.getMessage());
             }
         });
+    }
+    private boolean isNewer(String apiVersion, String currentVersion) {
+        try {
+            String[] apiParts = apiVersion.replaceAll("[^0-9.]", "").split("\\.");
+            String[] currentParts = currentVersion.replaceAll("[^0-9.]", "").split("\\.");
+
+            int length = Math.max(apiParts.length, currentParts.length);
+            for (int i = 0; i < length; i++) {
+                int apiPart = (i < apiParts.length && !apiParts[i].isEmpty()) ? Integer.parseInt(apiParts[i]) : 0;
+                int currentPart = (i < currentParts.length && !currentParts[i].isEmpty()) ? Integer.parseInt(currentParts[i]) : 0;
+
+                if (apiPart > currentPart) {
+                    return true;
+                }
+                if (apiPart < currentPart) {
+                    return false;
+                }
+            }
+            return false;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

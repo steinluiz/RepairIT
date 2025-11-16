@@ -44,12 +44,12 @@ final class Repairables {
 
             if (!(isTool || isArmor)) continue;
 
-            boolean matchStone     = hasPrefix(name, STONE);
-            boolean matchIron      = hasPrefix(name, IRON);
-            boolean matchGolden    = hasPrefix(name, GOLD);
-            boolean matchDiamond   = hasPrefix(name, DIAMOND);
+            boolean matchStone = hasPrefix(name, STONE);
+            boolean matchIron = hasPrefix(name, IRON);
+            boolean matchGolden = hasPrefix(name, GOLD);
+            boolean matchDiamond = hasPrefix(name, DIAMOND);
             boolean matchNetherite = hasPrefix(name, NETHERITE);
-            boolean matchChain     = hasPrefix(name, CHAIN);
+            boolean matchChain = hasPrefix(name, CHAIN);
 
             if (isTool && (matchStone || matchIron || matchGolden || matchDiamond || matchNetherite)) {
                 set.add(m);

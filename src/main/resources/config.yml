@@ -10,3 +10,16 @@ hammer:
   ITEM: mace
   # If you want to set a custom model data please uncomment the next line
   # CUSTOM_MODEL_DATA: 100
+  crafting:
+    # set enabled to false to disable the craft
+    enabled: true
+
+    shape:
+      - "AAA"
+      - "ABA"
+      - " B "
+
+    # Material list: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+    ingredients:
+      A: "IRON_INGOT"
+      B: "STICK"
