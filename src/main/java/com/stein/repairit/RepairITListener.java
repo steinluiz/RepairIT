@@ -21,15 +21,16 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Transformation;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.bukkit.enchantments.Enchantment;
 
 public class RepairITListener implements Listener {
 
     private final RepairITMain plugin;
 
     private static final double DISPLAY_RADIUS = 0.30;
-    private static final double DAMAGE_RADIUS  = 0.20;
+    private static final double DAMAGE_RADIUS = 0.20;
 
-    private static final Quaternionf Q_ID    = new Quaternionf(0f, 0f, 0f, 1f);
+    private static final Quaternionf Q_ID = new Quaternionf(0f, 0f, 0f, 1f);
     private static final Quaternionf Q_RIGHT = new Quaternionf(0.704f, 0f, 0f, 0.7f);
 
     public RepairITListener(RepairITMain plugin) {
@@ -47,10 +48,11 @@ public class RepairITListener implements Listener {
     private static Material getRepairIngredient(Material itemType) {
         String name = itemType.name();
         if (name.startsWith("NETHERITE_")) return Material.NETHERITE_INGOT;
-        if (name.startsWith("DIAMOND_"))   return Material.DIAMOND;
+        if (name.startsWith("DIAMOND_")) return Material.DIAMOND;
         if (name.startsWith("GOLDEN_") || name.startsWith("GOLD_")) return Material.GOLD_INGOT;
-        if (name.startsWith("IRON_") || name.startsWith("CHAINMAIL_") || name.startsWith("CHAIN_")) return Material.IRON_INGOT;
-        if (name.startsWith("STONE_"))     return Material.COBBLESTONE;
+        if (name.startsWith("IRON_") || name.startsWith("CHAINMAIL_") || name.startsWith("CHAIN_"))
+            return Material.IRON_INGOT;
+        if (name.startsWith("STONE_")) return Material.COBBLESTONE;
         return null;
     }
 
@@ -77,7 +79,7 @@ public class RepairITListener implements Listener {
 
         d.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.FIXED);
         Vector3f translation = material ? new Vector3f(0f, 0.55f, 0f) : new Vector3f(0f, 0.52f, 0f);
-        Vector3f scale       = material ? new Vector3f(0.4f, 0.4f, 0.4f) : new Vector3f(0.7f, 0.7f, 0.7f);
+        Vector3f scale = material ? new Vector3f(0.4f, 0.4f, 0.4f) : new Vector3f(0.7f, 0.7f, 0.7f);
         d.setTransformation(new Transformation(translation, new Quaternionf(Q_ID), scale, new Quaternionf(Q_RIGHT)));
 
         d.setRotation(playerYaw + 40f, 0f);
@@ -87,7 +89,11 @@ public class RepairITListener implements Listener {
     private static class Targets {
         final ItemDisplay tool;
         final ItemDisplay material;
-        Targets(ItemDisplay tool, ItemDisplay material) { this.tool = tool; this.material = material; }
+
+        Targets(ItemDisplay tool, ItemDisplay material) {
+            this.tool = tool;
+            this.material = material;
+        }
     }
 
     private static Targets findTargetsNear(Location center, double radius) {
@@ -101,9 +107,15 @@ public class RepairITListener implements Listener {
 
             double dsq = d.getLocation().distanceSquared(center);
             if (s.getType().getMaxDurability() > 0) {
-                if (dsq <= bestTool) { bestTool = dsq; tool = d; }
+                if (dsq <= bestTool) {
+                    bestTool = dsq;
+                    tool = d;
+                }
             } else {
-                if (dsq <= bestMat)  { bestMat  = dsq; material = d; }
+                if (dsq <= bestMat) {
+                    bestMat = dsq;
+                    material = d;
+                }
             }
         }
         return new Targets(tool, material);
@@ -135,18 +147,22 @@ public class RepairITListener implements Listener {
         boolean handEmpty = hand.getType().isAir();
 
         ItemDisplay materialDisp = targets.material;
-        ItemDisplay toolDisp     = targets.tool;
+        ItemDisplay toolDisp = targets.tool;
 
         if (materialDisp != null) {
             event.setCancelled(true);
             ItemStack matStack = materialDisp.getItemStack();
             if (matStack != null && !matStack.getType().isAir()) {
-                ItemStack give = matStack.clone(); give.setAmount(1);
+                ItemStack give = matStack.clone();
+                give.setAmount(1);
                 giveOrDrop(player, give);
 
                 int amt = matStack.getAmount();
                 if (amt <= 1) materialDisp.remove();
-                else { matStack.setAmount(amt - 1); materialDisp.setItemStack(matStack); }
+                else {
+                    matStack.setAmount(amt - 1);
+                    materialDisp.setItemStack(matStack);
+                }
 
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.7f, 1.2f);
             }
@@ -165,7 +181,8 @@ public class RepairITListener implements Listener {
 
             if (holdingMat) {
                 event.setCancelled(true);
-                ItemStack placed = hand.clone(); placed.setAmount(1);
+                ItemStack placed = hand.clone();
+                placed.setAmount(1);
                 if (hand.getAmount() > 1) hand.setAmount(hand.getAmount() - 1);
                 else player.getInventory().setItemInMainHand(null);
 
@@ -174,7 +191,8 @@ public class RepairITListener implements Listener {
             }
             if (handEmpty) {
                 event.setCancelled(true);
-                ItemStack give = displayItem.clone(); give.setAmount(1);
+                ItemStack give = displayItem.clone();
+                give.setAmount(1);
                 toolDisp.remove();
                 player.getInventory().setItemInMainHand(give);
                 player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 0.7f, 1.2f);
@@ -184,7 +202,8 @@ public class RepairITListener implements Listener {
         }
         if (isRepairable(hand)) {
             event.setCancelled(true);
-            ItemStack placed = hand.clone(); placed.setAmount(1);
+            ItemStack placed = hand.clone();
+            placed.setAmount(1);
             if (hand.getAmount() > 1) hand.setAmount(hand.getAmount() - 1);
             else player.getInventory().setItemInMainHand(null);
 
@@ -233,7 +252,12 @@ public class RepairITListener implements Listener {
             }
         }
 
-        if (next >= 5) {
+        int densityLevel = inHand.getEnchantmentLevel(Enchantment.DENSITY);
+
+        int hitsNeeded = RepairITMain.CONFIG.getHitsNeeded(densityLevel);
+
+        if (next >= hitsNeeded) {
+
             Material matType = materialDisp.getItemStack().getType();
             int repairBy = RepairITMain.CONFIG.getRepairAmount(matType);
 
@@ -254,5 +278,4 @@ public class RepairITListener implements Listener {
 
             pdc.set(RepairITMain.Keys.HIT_COUNT, PersistentDataType.INTEGER, 0);
         }
-    }
-}
+    }}

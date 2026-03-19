@@ -39,6 +39,13 @@ public class ConfigManager {
         return -1;
     }
 
+    public int getHitsNeeded(int densityLevel) {
+        String path = "hammer.repair-speed.";
+        if (densityLevel <= 0) return plugin.getConfig().getInt(path + "default", 10);
+        int level = Math.min(densityLevel, 5);
+        return plugin.getConfig().getInt(path + "density-" + level, 10);
+    }
+
     public boolean isCraftingEnabled() {
         return plugin.getConfig().getBoolean("hammer.crafting.enabled", true);
     }

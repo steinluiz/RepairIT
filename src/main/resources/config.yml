@@ -23,3 +23,10 @@ hammer:
     ingredients:
       A: "IRON_INGOT"
       B: "STICK"
+  repair-speed:
+    default: 10
+    density-1: 8
+    density-2: 6
+    density-3: 5
+    density-4: 4
+    density-5: 3
